@@ -19,7 +19,7 @@ OptionParser.new do |opts|
     options[:title] = value
   end
   options[:title] ||= ENV['BOOKMARK_TITLE']
-  options[:title] = options[:title]&.strip!
+  options[:title] = options[:title]&.strip
 
   opts.on("--tags TAGS", String) do |value|
     options[:tags] = value

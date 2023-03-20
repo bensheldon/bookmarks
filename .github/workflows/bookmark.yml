@@ -27,11 +27,11 @@ jobs:
     steps:
       - name: Bookmark Details
         run: |
-          echo "Bookmark URL - ${{ github.event.inputs.bookmark_url }}" >> $GITHUB_STEP_SUMMARY
-          echo "Bookmark Title - ${{ github.event.inputs.bookmark_title }}" >> $GITHUB_STEP_SUMMARY
-          echo "Bookmark Tags - ${{ github.event.inputs.bookmark_tags }}" >> $GITHUB_STEP_SUMMARY
-          echo "Bookmark Notes - ${{ github.event.inputs.bookmark_notes }}" >> $GITHUB_STEP_SUMMARY
-          echo "\n\n" >> $GITHUB_STEP_SUMMARY
+          echo "- Bookmark URL: ${{ github.event.inputs.bookmark_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Bookmark Title: ${{ github.event.inputs.bookmark_title }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Bookmark Tags: ${{ github.event.inputs.bookmark_tags }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Bookmark Notes: ${{ github.event.inputs.bookmark_notes }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
 
       - name: Checkout code
         uses: actions/checkout@v3
