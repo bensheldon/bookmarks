@@ -13,16 +13,16 @@ OptionParser.new do |opts|
     options[:url] = value.strip
   end
   opts.on("--title TITLE", String) do |value|
-    options[:title] = value.strip
+    options[:title] = value&.strip
   end
   opts.on("--tags TAGS", String) do |value|
-    options[:tags] = value.split(",").map(&:strip)
+    options[:tags] = value&.split(",")&.map(&:strip)
   end
   opts.on("--notes [NOTES]", String) do |value|
-    options[:notes] = value.strip
+    options[:notes] = value&.strip
   end
   opts.on("--commit [REPOSITORY]", String) do |value|
-    options[:commit] = value
+    options[:commit] = value&.strip
   end
   opts.on("--save") do |value|
     options[:save] = value
