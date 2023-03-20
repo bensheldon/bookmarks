@@ -1,0 +1,46 @@
+name: Create Bookmark
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'URL'
+        required: true
+        type: string
+      title:
+        description: 'Title'
+        required: false
+        type: string
+      tags:
+        description: 'Tags'
+        required: false
+        type: string
+      notes:
+        description: 'Notes'
+        required: false
+        type: string
+jobs:
+  create_bookmark:
+    name: Create a new Bookmark
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Create bookmark
+        env:
+          BOOKMARK_URL: ${{ github.event.inputs.url }}
+          BOOKMARK_TITLE: ${{ github.event.inputs.title }}
+          BOOKMARK_TAGS: ${{ github.event.inputs.tags }}
+          BOOKMARK_NOTES: ${{ github.event.inputs.notes }}
+        run: | 
+          bundle exec script/bookmark.rb \
+            --url $BOOKMARK_URL \
+            --title $BOOKMARK_TITLE \
+            --tags $BOOKMARK_TAGS \
+            --notes $BOOKMARK_NOTES
+            --commit "${GITHUB_REPOSITORY#*/}#${GITHUB_REF##*/}"
