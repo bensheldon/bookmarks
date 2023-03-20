@@ -10,26 +10,37 @@ OptionParser.new do |opts|
   opts.banner = "Usage: example.rb [options]"
 
   opts.on("--url URL", String) do |value|
-    options[:url] = value.strip
+    options[:url] = value
   end
+  options[:url] ||= ENV['BOOKMARK_URL']
+  options[:url] = options[:url].strip
+
   opts.on("--title TITLE", String) do |value|
-    options[:title] = value&.strip
+    options[:title] = value
   end
+  options[:title] ||= ENV['BOOKMARK_TITLE']
+  options[:title] = options[:title]&.strip!
+
   opts.on("--tags TAGS", String) do |value|
-    options[:tags] = value&.split(",")&.map(&:strip)
+    options[:tags] = value
   end
+  options[:tags] ||= ENV['BOOKMARK_TAGS']
+  options[:tags] = Array(options[:tags]&.split(",")&.map(&:strip))
+
   opts.on("--notes [NOTES]", String) do |value|
-    options[:notes] = value&.strip
+    options[:notes] = value
   end
+  options[:notes] ||= ARGV.join
+  options[:notes] = options[:notes]&.strip
+
   opts.on("--commit [REPOSITORY]", String) do |value|
     options[:commit] = value&.strip
   end
+
   opts.on("--save") do |value|
     options[:save] = value
   end
 end.parse!
-
-options[:notes] ||= ARGV.join.strip
 
 bookmark = Bookmark.new(url: options[:url], title: options[:title], notes: options[:notes], tags: options[:tags])
 puts bookmark.to_s

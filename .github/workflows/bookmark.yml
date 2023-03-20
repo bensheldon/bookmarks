@@ -2,19 +2,19 @@ name: Create Bookmark
 on:
   workflow_dispatch:
     inputs:
-      url:
+      bookmark_url:
         description: 'URL'
         required: true
         type: string
-      title:
+      bookmark_title:
         description: 'Title'
         required: false
         type: string
-      tags:
+      bookmark_tags:
         description: 'Tags'
         required: false
         type: string
-      notes:
+      bookmark_notes:
         description: 'Notes'
         required: false
         type: string
@@ -25,6 +25,14 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Bookmark Details
+        run: |
+          echo "Bookmark URL - ${{ github.event.inputs.bookmark_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "Bookmark Title - ${{ github.event.inputs.bookmark_title }}" >> $GITHUB_STEP_SUMMARY
+          echo "Bookmark Tags - ${{ github.event.inputs.bookmark_tags }}" >> $GITHUB_STEP_SUMMARY
+          echo "Bookmark Notes - ${{ github.event.inputs.bookmark_notes }}" >> $GITHUB_STEP_SUMMARY
+          echo "\n\n" >> $GITHUB_STEP_SUMMARY
+
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -36,14 +44,9 @@ jobs:
       - name: Create bookmark
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BOOKMARK_URL: ${{ github.event.inputs.url }}
-          BOOKMARK_TITLE: ${{ github.event.inputs.title }}
-          BOOKMARK_TAGS: ${{ github.event.inputs.tags }}
-          BOOKMARK_NOTES: ${{ github.event.inputs.notes }}
+          BOOKMARK_URL: ${{ github.event.inputs.bookmark_url }}
+          BOOKMARK_TITLE: ${{ github.event.inputs.bookmark_title }}
+          BOOKMARK_TAGS: ${{ github.event.inputs.bookmark_tags }}
+          BOOKMARK_NOTES: ${{ github.event.inputs.bookmark_notes }}
         run: | 
-          bundle exec script/bookmark.rb \
-            --url $BOOKMARK_URL \
-            --title $BOOKMARK_TITLE \
-            --tags $BOOKMARK_TAGS \
-            --notes $BOOKMARK_NOTES \
-            --commit "${GITHUB_REPOSITORY}#${GITHUB_REF##*/}"
+          bundle exec script/bookmark.rb --commit="${GITHUB_REPOSITORY}#${GITHUB_REF##*/}" >> $GITHUB_STEP_SUMMARY
