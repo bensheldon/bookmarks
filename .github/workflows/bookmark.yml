@@ -35,6 +35,7 @@ jobs:
 
       - name: Create bookmark
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BOOKMARK_URL: ${{ github.event.inputs.url }}
           BOOKMARK_TITLE: ${{ github.event.inputs.title }}
           BOOKMARK_TAGS: ${{ github.event.inputs.tags }}
