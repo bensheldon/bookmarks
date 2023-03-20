@@ -42,5 +42,5 @@ jobs:
             --url $BOOKMARK_URL \
             --title $BOOKMARK_TITLE \
             --tags $BOOKMARK_TAGS \
-            --notes $BOOKMARK_NOTES
+            --notes $BOOKMARK_NOTES \
             --commit "${GITHUB_REPOSITORY#*/}#${GITHUB_REF##*/}"
