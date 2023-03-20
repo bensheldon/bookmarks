@@ -49,4 +49,4 @@ jobs:
           BOOKMARK_TAGS: ${{ github.event.inputs.bookmark_tags }}
           BOOKMARK_NOTES: ${{ github.event.inputs.bookmark_notes }}
         run: | 
-          bundle exec script/bookmark.rb --commit="${GITHUB_REPOSITORY}#${GITHUB_REF##*/}" >> $GITHUB_STEP_SUMMARY
+          bundle exec script/bookmark.rb --commit="${GITHUB_REPOSITORY}#${GITHUB_REF##*/}"
