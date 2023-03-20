@@ -58,7 +58,7 @@ if options[:commit]
   result = github.create_contents(
     repo,
     bookmark.filepath,
-    "Add bookmark for #{bookmark.title}",
+    "Add bookmark for #{bookmark.url}",
     bookmark.to_s,
     branch: branch
   )
