@@ -27,12 +27,6 @@ OptionParser.new do |opts|
   options[:tags] ||= ENV['BOOKMARK_TAGS']
   options[:tags] = Array(options[:tags]&.split(",")&.map(&:strip))
 
-  opts.on("--notes [NOTES]", String) do |value|
-    options[:notes] = value
-  end
-  options[:notes] ||= ARGV.join
-  options[:notes] = options[:notes]&.strip
-
   opts.on("--commit [REPOSITORY]", String) do |value|
     options[:commit] = value&.strip
   end
@@ -40,7 +34,14 @@ OptionParser.new do |opts|
   opts.on("--save") do |value|
     options[:save] = value
   end
+
+  opts.on("--notes [NOTES]", String) do |value|
+    options[:notes] = value
+  end
 end.parse!
+
+options[:notes] ||= ARGV.join
+options[:notes] = options[:notes]&.strip
 
 bookmark = Bookmark.new(url: options[:url], title: options[:title], notes: options[:notes], tags: options[:tags])
 puts bookmark.to_s
