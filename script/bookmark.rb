@@ -7,52 +7,49 @@ require_relative 'lib/bookmark'
 
 options = {}
 OptionParser.new do |opts|
-  opts.banner = "Usage: example.rb [options]"
+  opts.banner = "Usage: bookmark.rb [options]"
 
-  opts.on("--url URL", String) do |value|
-    options[:url] = value
-  end
-  options[:url] ||= ENV['BOOKMARK_URL']
-  options[:url] = options[:url].strip
+  opts.on("--url BOOKMARK_URL", String)
+  opts.on("--title [BOOKMARK_TITLE]", String)
+  opts.on("--tags [BOOKMARK_TAGS]", String)
+  opts.on("--notes [BOOKMARK_NOTES]", String)
+  opts.on("--commit [REPOSITORY#BRANCH]", String)
+  opts.on("--save")
+end.parse!(into: options)
 
-  opts.on("--title TITLE", String) do |value|
-    options[:title] = value
-  end
-  options[:title] ||= ENV['BOOKMARK_TITLE']
-  options[:title] = options[:title]&.strip
+options[:url] ||= ENV['BOOKMARK_URL']
+raise ArgumentError, "--url BOOKMARK_URL is required" unless options[:url]
 
-  opts.on("--tags TAGS", String) do |value|
-    options[:tags] = value
-  end
-  options[:tags] ||= ENV['BOOKMARK_TAGS']
-  options[:tags] = Array(options[:tags]&.split(",")&.map(&:strip))
+options[:url] = options[:url].strip
 
-  opts.on("--commit [REPOSITORY]", String) do |value|
-    options[:commit] = value&.strip
-  end
+options[:title] ||= ENV['BOOKMARK_TITLE']
+options[:title] = options[:title]&.strip
 
-  opts.on("--save") do |value|
-    options[:save] = value
-  end
+options[:tags] ||= ENV['BOOKMARK_TAGS']
+options[:tags] = Array(options[:tags]&.split(",")&.map(&:strip))
 
-  opts.on("--notes [NOTES]", String) do |value|
-    options[:notes] = value
-  end
-end.parse!
-
-options[:notes] ||= ARGV.join
-options[:notes] = options[:notes]&.strip
+if $stdin.stat.pipe?
+  options[:notes] ||= $stdin.read
+end
+options[:notes] ||= ENV['BOOKMARK_NOTES']
 
 bookmark = Bookmark.new(url: options[:url], title: options[:title], notes: options[:notes], tags: options[:tags])
 puts bookmark.to_s
 
-bookmark.save if options[:save]
+puts "\n\n\========================\n\n"
+
+if options[:save]
+  bookmark.save
+  puts "Saved to #{bookmark.filepath}"
+end
 
 if options[:commit]
   require 'octokit'
   raise "GITHUB_TOKEN is required" unless ENV['GITHUB_TOKEN']
   github = Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
-  repo, branch = options[:commit].split("#")
+  repo, branch = options[:commit].strip.split("#")
+
+  raise ArgumentError, "--commit argument is missing value in form of: 'user/repo#branch' " unless repo && branch
 
   # Use the GitHub API to create a new commit
   result = github.create_contents(
@@ -63,5 +60,5 @@ if options[:commit]
     branch: branch
   )
 
-  puts "==================\n\n Created #{result.content.html_url}"
+  puts "Committed to #{result.content.html_url}"
 end

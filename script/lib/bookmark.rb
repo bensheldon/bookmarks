@@ -12,13 +12,18 @@ class Bookmark
 
   def self.load(path)
     id = File.basename(path, ".md").split("_")[1]
-    content = YAML.load_file(path)
+
+    contents = File.read(path)
+    documents = contents.split("---").map(&:strip).reject(&:empty?)
+    frontmatter = YAML.safe_load(documents[0] || "")
+    body = documents[1] || ""
+
     new(
-      url: content["url"],
-      title: content["title"],
-      tags: content["tags"],
-      notes: content["notes"],
-      created_at: Time.parse(content["created_at"]),
+      url: frontmatter["url"],
+      title: frontmatter["title"],
+      tags: frontmatter["tags"],
+      notes: body,
+      created_at: Time.parse(frontmatter["created_at"]),
       id: id,
     )
   end
@@ -51,12 +56,13 @@ class Bookmark
       title: title,
       tags: tags,
     }.transform_keys(&:to_s)
+    body = notes&.strip
 
     <<~MARKDOWN
       #{frontmatter.to_yaml.strip}
       ---
       
-      #{notes&.strip}
+      #{body}
     MARKDOWN
   end
 end
