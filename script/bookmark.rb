@@ -29,9 +29,9 @@ options[:tags] ||= ENV['BOOKMARK_TAGS']
 options[:tags] = Array(options[:tags]&.split(",")&.map(&:strip))
 
 if $stdin.stat.pipe?
-  options[:notes] ||= $stdin.read
+  options[:notes] ||= $stdin.read&.strip
 end
-options[:notes] ||= ENV['BOOKMARK_NOTES']
+options[:notes] = ENV['BOOKMARK_NOTES'] if options[:notes].nil? || options[:notes].empty?
 
 bookmark = Bookmark.new(url: options[:url], title: options[:title], notes: options[:notes], tags: options[:tags])
 puts bookmark.to_s
