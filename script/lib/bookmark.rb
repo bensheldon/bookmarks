@@ -55,7 +55,7 @@ class Bookmark
   def to_s
     frontmatter = {
       url: url,
-      created_at: Time.new.strftime('%Y-%m-%d %H:%M %Z'),
+      created_at: created_at.strftime('%Y-%m-%d %H:%M %Z'),
       published: published,
       title: title,
       tags: tags,
