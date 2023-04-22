@@ -27,16 +27,17 @@ jobs:
     steps:
       - name: Bookmark Details
         env:
-          OUTPUT: |
-            ${{ format('
-            - Bookmark URL: {0}\n
-            - Bookmark Title: {1}\n
-            - Bookmark Tags: {2}\n
-            - Bookmark Notes: {3}\n
-            ', github.event.inputs.bookmark_url, github.event.inputs.bookmark_title, github.event.inputs.bookmark_tags, github.event.inputs.bookmark_notes) }}
+          BOOKMARK_URL: ${{ github.event.inputs.bookmark_url }}
+          BOOKMARK_TITLE: ${{ github.event.inputs.bookmark_title }}
+          BOOKMARK_TAGS: ${{ github.event.inputs.bookmark_tags }}
+          BOOKMARK_NOTES: ${{ github.event.inputs.bookmark_notes }}
         run: |
-          echo $OUTPUT
-          echo $OUTPUT >> $GITHUB_STEP_SUMMARY
+          echo ${{ toJSON(format('- Bookmark URL: {0}', github.event.inputs.bookmark_url)) }} >> $GITHUB_STEP_SUMMARY
+          echo ${{ toJSON(format('- Bookmark Title: {0}', github.event.inputs.bookmark_title)) }} >> $GITHUB_STEP_SUMMARY
+          echo ${{ toJSON(format('- Bookmark Tags: {0}', github.event.inputs.bookmark_tags)) }} >> $GITHUB_STEP_SUMMARY
+          echo ${{ toJSON(format('- Bookmark Notes: {0}', github.event.inputs.bookmark_notes)) }} >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
       - name: Checkout code
         uses: actions/checkout@v3
 
